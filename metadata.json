@@ -1,0 +1,5 @@
+{
+  "name": "Crypto & Finance Digest",
+  "description": "AI-powered news aggregator for crypto and finance using Gemini API",
+  "requestFramePermissions": []
+}
