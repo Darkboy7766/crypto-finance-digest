@@ -3,7 +3,7 @@ import { createServer as createViteServer } from "vite";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import dotenv from "dotenv";
+import * from "dotenv";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
