@@ -173,7 +173,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredNews.length > 0 ? ( 
               filteredNews.map((item, index) => (
-                <div key={index} className="bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-800 flex flex-col">
+                <div key={index} className="bg-gray-900 rounded-xl bg-white/5 backdrop-blur-md p-6 shadow-lg border border-gray-800 flex flex-col hover:scale-105 transition-transform">
                   <div className="flex items-center gap-2 mb-4">
                     {/* Placeholder for source logo */}
                     <img src="https://picsum.photos/seed/coindesk/32/32" alt="Source Logo" className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
