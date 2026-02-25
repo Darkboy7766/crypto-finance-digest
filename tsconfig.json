@@ -9,8 +9,6 @@
     "outDir": "./dist",
     "rootDir": "./",
     "jsx": "react-jsx",
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
     "allowJs": true,
     "strict": false
   },
