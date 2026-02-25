@@ -30,27 +30,30 @@ async function fetchAndCacheNews() {
     const genAI = new GoogleGenerativeAI(apiKey!); 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const prompt = `Намери ТОП 5 на най-важните и различни новини за крипто и финанси от последните часове.
-Върни ги ТОЧНО под формата на JSON масив от обекти. 
-ВАЖНО: Преведи заглавията и резюметата на БЪЛГАРСКИ ЕЗИК.
+    const prompt = `Намери ТОП 5 на най-важните новини за крипто и финанси. 
+      Върни ги КАТО ЧИСТ JSON МАСИВ. 
+      ВАЖНО: Не слагай кавички вътре в заглавията или текста, освен ако не са ескейпнати.
+      Преведи на български.
 
-Формат:
-[
-  {
-    "title": "Заглавие на български",
-    "url": "линк към новината",
-    "summary": ["булет на български", "булет на български", "булет на български"],
-    "originalText": "кратък цитат"
-  },
-  ... (още 4 новини)
-]
-Върни САМО чистия JSON масив.`;
+      Формат:
+      [
+        {
+          "title": "...",
+          "url": "...",
+          "summary": ["...", "...", "..."],
+          "originalText": "..."
+        }
+      ]`;
 
 const result = await model.generateContent(prompt);
 const response = await result.response;
 const text = response.text();
 
-const cleanJson = text.replace(/```json/g, "").replace(/```/g, "").trim();
+const cleanJson = text
+  .replace(/```json/gi, "")
+  .replace(/```/g, "")
+  .replace(/[\u0000-\u001F\u007F-\u009F]/g, "") // Премахва скрити символи, които чупят JSON
+  .trim();
 const parsed = JSON.parse(cleanJson);
 
 // Проверяваме дали е масив и го записваме
@@ -101,8 +104,8 @@ async function startServer() {
   } else {
     app.use(express.static("dist"));
     app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "dist", "index.html"));
-  });
+    res.sendFile(path.join(process.cwd(), "dist", "index.html"));
+    });
   }
 
   app.listen(PORT, "0.0.0.0", () => {
