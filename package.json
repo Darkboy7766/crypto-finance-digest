@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && tsc server.ts --outDir dist", 
-    "start": "NODE_ENV=production node dist/server.js",
+    "build": "vite build && tsc --project tsconfig.json", 
+    "start": "cross-env NODE_ENV=production node dist/server.js"
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
