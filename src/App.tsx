@@ -98,6 +98,15 @@ export default function App() {
   return title.includes(searchTerm) || summary.includes(searchTerm);
 });
 
+const getSourceDomain = (url: string) => {
+  try {
+    const domain = new URL(url).hostname.replace('www.', '');
+    return domain;
+  } catch {
+    return "Източник";
+  }
+};
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 font-sans">
       {/* Header / Navigation Bar */}
@@ -153,6 +162,9 @@ export default function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h1 className="text-4xl font-bold tracking-tight text-white mb-8">
+            Crypto <span className="text-blue-500">Finance</span> Digest
+          </h1>
         {isError ? (
           <div className="bg-red-900 border border-red-700 p-6 rounded-xl flex items-start gap-4 text-red-100">
             <AlertCircle className="text-red-400 w-6 h-6 shrink-0" />
@@ -171,34 +183,56 @@ export default function App() {
           <NewsSkeleton />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredNews.length > 0 ? ( 
-              filteredNews.map((item, index) => (
-                <div key={index} className="bg-gray-900 rounded-xl bg-white/5 backdrop-blur-md p-6 shadow-lg border border-gray-800 flex flex-col hover:scale-105 transition-transform">
-                  <div className="flex items-center gap-2 mb-4">
-                    {/* Placeholder for source logo */}
-                    <img src="https://picsum.photos/seed/coindesk/32/32" alt="Source Logo" className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
-                    <span className="text-sm font-medium text-gray-400">CoinDesk</span>
+            {filteredNews.length > 0 ? (
+              filteredNews.map((item, index) => {
+                const domain = getSourceDomain(item.url);
+                // Използваме Google Favicon API за логото
+                const logoUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+                return (
+                  <div key={index} className="bg-gray-900 rounded-xl bg-white/5 backdrop-blur-md p-6 shadow-lg border border-blue-800 flex flex-col hover:scale-[1.02] transition-transform duration-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      {/* Динамично лого */}
+                      <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center overflow-hidden border border-gray-700">
+                        <img 
+                          src={logoUrl} 
+                          alt={domain} 
+                          className="w-5 h-5 object-contain" 
+                          onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/330/330703.png"; }} // Икона по подразбиране при грешка
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-blue-400 uppercase tracking-wider">
+                        {domain.split('.')[0]} {/* Изписва само името, напр. "coindesk" */}
+                      </span>
+                    </div>
+
+                    <h2 className="text-xl font-bold text-white mb-3 leading-tight">
+                      {item.title}
+                    </h2>
+
+                    <ul className="list-disc list-inside text-gray-300 text-sm space-y-2 flex-grow">
+                      {item.summary.map((bullet, i) => (
+                        <li key={i} className="leading-relaxed">
+                          {bullet.replace(/^[•-][\s]*/, '')}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 transition-colors self-start shadow-md"
+                    >
+                      <ExternalLink className="w-4 h-4" /> Прочети в {domain.split('.')[0]}
+                    </a>
                   </div>
-                  <h2 className="text-xl font-bold text-gray-50 mb-3 font-serif leading-tight">{item.title}</h2>
-                  <ul className="list-disc list-inside text-gray-300 text-sm space-y-2 flex-grow">
-                    {item.summary.map((bullet, i) => (
-                      <li key={i}>{bullet.replace(/^[•-][\\s]*/, '')}</li>
-                    ))}
-                  </ul>
-                  <a 
-                    href={item.url} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors self-start"
-                  >
-                    <ExternalLink className="w-4 h-4" /> Прочети оригинала
-                  </a>
-                </div>
-              ))
+                );
+              })
             ) : (
-              <div className="col-span-full text-center py-12 text-gray-400">
-                <p className="text-lg">Няма намерени новини, отговарящи на критериите.</p>
-              </div>
+             <div className="col-span-full text-center py-12 text-gray-400">
+            <p className="text-lg">Няма намерени новини, отговарящи на критериите.</p>
+          </div>
             )}
           </div>
         )}

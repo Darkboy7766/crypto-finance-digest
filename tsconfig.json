@@ -8,9 +8,10 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "./",
+    "jsx": "react-jsx",
     "allowJs": true,
     "strict": false
   },
-  "include": ["server.ts"],
+  "include": ["server.ts", "src"],
   "exclude": ["node_modules", "dist"]
 }
